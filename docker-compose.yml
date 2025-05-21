@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: som-db
+    environment:
+      POSTGRES_DB: som
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - som_db_data:/var/lib/postgresql/data
+      - som_files_data:/data
+    ports:
+      - "5433:5432"
+    networks:
+      - som-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: som-backend
+    expose:
+      - "8000"
+    environment:
+      POSTGRES_URL: ${POSTGRES_URL}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - som-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: som-frontend
+    expose:
+      - "80"
+    environment:
+      API_URL: ${API_URL}
+    networks:
+      - som-network
+
+  nginx:
+    image: nginx:latest
+    container_name: som-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - som-network
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  som_files_data:
+  som_db_data:
+
+networks:
+  som-network:
+    driver: bridge
