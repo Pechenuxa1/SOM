@@ -1,32 +1,12 @@
-function createFileForm(name, label, multiple = false) {
-    const fileFormGroup = document.createElement('div');
-    fileFormGroup.className = 'form-group';
-
-    const fileLabel = document.createElement('label');
-    fileLabel.setAttribute('for', 'file');
-    fileLabel.textContent = label;
-
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.id = name;
-    fileInput.name = name;
-    fileInput.multiple = multiple
-
-    fileFormGroup.appendChild(fileLabel);
-    fileFormGroup.appendChild(fileInput);
-    return fileFormGroup;
-}
-
-
 async function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
     return fileInput.files;
 }
 
 
-function createFormContent(modal, modalContent) {
+function createFormContent(modal, modalContent, surveyId) {
     const formTitle = document.createElement('h2');
-    formTitle.textContent = 'Добавить обследование';
+    formTitle.textContent = 'Редактировать обследование';
     modalContent.appendChild(formTitle);
 
     const form = document.createElement('form');
@@ -58,7 +38,7 @@ function createFormContent(modal, modalContent) {
         submitBtn.textContent = 'Отправка...';
 
         try {
-            let API_URL = window.APP_CONFIG.API_URL
+            let API_URL = `${window.APP_CONFIG.API_URL}`
 
             const formData = new FormData();
 
@@ -96,8 +76,8 @@ function createFormContent(modal, modalContent) {
                 formData.append('other_files', file);
             });
 
-            let response = await fetch('/api/surveys/', {
-                method: 'POST',
+            let response = await fetch(`/api/surveys/${surveyId}`, {
+                method: 'PATCH',
                 body: formData,
             });
 
@@ -119,32 +99,36 @@ function createFormContent(modal, modalContent) {
     form.appendChild(submitBtn);
     form.style.maxHeight = '500px';
     form.style.overflowY = 'auto';
-
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const menu = document.querySelector(`#loadDataBtn6`);
+async function addEditButtonHandler(editButton) {
+    editButton.addEventListener('click', function() {
+        if (!currentSurveyId) {
+            alert('Сначала выберите обследование');
+            return;
+        }
 
-    const modal = document.createElement('div');
-    modal.id = 'modalForm';
-    modal.className = 'modal hidden';
-    document.body.appendChild(modal);
+        const modal = document.createElement('div');
+        modal.id = 'modalForm';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
 
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal-content';
-    modal.appendChild(modalContent);
-
-    menu.addEventListener('click', async () => {
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        modal.appendChild(modalContent);
         modalContent.innerHTML = '';
+        
         const closeBtn = document.createElement('span');
         closeBtn.className = 'close-btn';
         closeBtn.innerHTML = '&times;';
         modalContent.appendChild(closeBtn);
-        closeBtn.addEventListener('click', function () {
+        
+        closeBtn.addEventListener('click', function() {
             modal.classList.add('hidden');
         });
-        createFormContent(modal, modalContent);
+        
+        createFormContent(modal, modalContent, currentSurveyId);
         modal.classList.remove('hidden');
     });
-});
+}

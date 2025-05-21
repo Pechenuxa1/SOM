@@ -108,65 +108,42 @@ async function handleCheckboxChangeForQuestions(e) {
 }
 
 
-document.addEventListener('DOMContentLoaded', async function() {
-    const loadBtn = document.getElementById('loadDataBtn3');
-    tableContainer = document.getElementById('tableContainer');
-    tableButtons = document.getElementById('tableButtons');
-    tableHeader = document.getElementById('tableHeader');
-    tableBody = document.getElementById('tableBody');
-    loadingIndicator = document.getElementById('loadingIndicator');
-    errorMessage = document.getElementById('errorMessage');
-    extraButtonsContainer = document.getElementById('extraButtonsContainer');
-    checkbox = document.getElementById('filter-checkbox');
+async function addSurveyButtonHandler(surveyId) {
+    let tableContainer = document.getElementById('tableContainer');
+    let tableButtons = document.getElementById('tableButtons');
+    let loadingIndicator = document.getElementById('loadingIndicator');
+    let errorMessage = document.getElementById('errorMessage');
+    let extraButtonsContainer = document.getElementById('extraButtonsContainer');
+    let checkbox = document.getElementById('filter-checkbox');
 
-    var API_URL = `/api/surveys/total-number`;
-
-    const response = await fetch(API_URL);
+    button.addEventListener('click', async function() {
+        checkbox.removeEventListener('change', handleCheckboxChangeForFile)
+        checkbox.removeEventListener('change', handleCheckboxChange)
+        checkbox.removeEventListener('change', handleCheckboxChangeForHunt)
+        checkbox.addEventListener('change', handleCheckboxChangeForQuestions)
+        try {
+            currentSurveyId = surveyId;
+            loadingIndicator.classList.remove('hidden');
+            tableContainer.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            extraButtonsContainer.innerHTML = '';
+            tableButtons.classList.add('hidden');
             
-    if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    const session_total_number = data.number;
-
-    const menu = document.querySelector(`#loadDataBtn3`).nextElementSibling;
-    for (const survey of data.surveys) {
-        const button = document.createElement('button');
-        button.className = 'dropdown-button';
-        button.textContent = `Обследование ${survey.number}`;
-
-        button.addEventListener('click', async function() {
-            checkbox.removeEventListener('change', handleCheckboxChangeForFile)
-            checkbox.removeEventListener('change', handleCheckboxChange)
-            checkbox.removeEventListener('change', handleCheckboxChangeForHunt)
-            checkbox.addEventListener('change', handleCheckboxChangeForQuestions)
-            console.log(`Обследование ${survey.number}`);
-            try {
-                currentSurveyId = survey.id;
-                loadingIndicator.classList.remove('hidden');
-                tableContainer.classList.add('hidden');
-                errorMessage.classList.add('hidden');
-                extraButtonsContainer.innerHTML = '';
-                tableButtons.classList.add('hidden');
-                
-                API_URL = `/api/questions/${survey.id}`;
-                const response = await fetch(API_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`Ошибка HTTP: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                updateQuestionsTable(data);
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-                errorMessage.textContent = `Ошибка при загрузке данных: ${error.message}`;
-                errorMessage.classList.remove('hidden');
-            } finally {
-                loadingIndicator.classList.add('hidden');
+            API_URL = `/api/questions/${surveyId}`;
+            const response = await fetch(API_URL);
+            
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
             }
-        });
-        menu.appendChild(button);
-    }
-});
+            
+            const data = await response.json();
+            updateQuestionsTable(data);
+        } catch (error) {
+            console.error('Ошибка загрузки данных:', error);
+            errorMessage.textContent = `Ошибка при загрузке данных: ${error.message}`;
+            errorMessage.classList.remove('hidden');
+        } finally {
+            loadingIndicator.classList.add('hidden');
+        }
+    });
+}
