@@ -1,4 +1,4 @@
-async function addSurveyButtonHandler(surveyId) {
+export async function addSurveyButtonHandler(surveyId) {
     let tableButtons = document.getElementById('tableButtons');
     let tableContainer = document.getElementById('tableContainer');
     let extraButtonsContainer = document.getElementById('extraButtonsContainer');

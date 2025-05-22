@@ -105,7 +105,7 @@ async function handleCheckboxChangeForHunt(e) {
 }
 
 
-async function addSurveyButtonHandler(surveyId) {
+export async function addSurveyButtonHandler(surveyId) {
     let loadingIndicator = document.getElementById('loadingIndicator');
     let tableContainer = document.getElementById('tableContainer');
     let errorMessage = document.getElementById('errorMessage');

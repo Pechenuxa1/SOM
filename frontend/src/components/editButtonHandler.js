@@ -102,7 +102,7 @@ function createFormContent(modal, modalContent, surveyId) {
 }
 
 
-async function addEditButtonHandler(editButton) {
+export async function addEditButtonHandler(editButton) {
     editButton.addEventListener('click', function() {
         if (!currentSurveyId) {
             alert('Сначала выберите обследование');

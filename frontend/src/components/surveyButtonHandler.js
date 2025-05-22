@@ -139,7 +139,7 @@ async function handleCheckboxChange(e) {
 }
 
 
-async function addSurveyButtonHanlder(surveyId) {
+export async function addSurveyButtonHandler(surveyId) {
     button.addEventListener('click', async function() {
         checkbox.removeEventListener('change', handleCheckboxChangeForFile)
         checkbox.removeEventListener('change', handleCheckboxChangeForQuestions)

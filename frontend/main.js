@@ -1,9 +1,12 @@
-import { addSurveyButtonHandler as addSurveyButtonHandlerForFiles } from './src/components/fileButtonHandler'
-import { addSurveyButtonHandler as addSurveyButtonHandlerForHunt } from './src/components/huntButtonHandler'
-import { addSurveyButtonHandler as addSurveyButtonHandlerForOtherFiles } from './src/components/otherFileButtonHandler'
-import { addParticipantsButtonHandler } from './src/components/participantButtonHandler'
-import { addSurveyButtonHandler as addSurveyButtonHandlerForQuestions } from './src/components/questionButtonHandler'
-import { addSurveyButtonHandler as addSurveyButtonHandlerForSurveys } from './src/components/surveyButtonHandler'
+import { addSurveyButtonHandler as addSurveyButtonHandlerForFiles } from './src/components/fileButtonHandler.js'
+import { addSurveyButtonHandler as addSurveyButtonHandlerForHunt } from './src/components/huntButtonHandler.js'
+import { addSurveyButtonHandler as addSurveyButtonHandlerForOtherFiles } from './src/components/otherFileButtonHandler.js'
+import { addParticipantsButtonHandler } from './src/components/participantButtonHandler.js'
+import { addSurveyButtonHandler as addSurveyButtonHandlerForQuestions } from './src/components/questionButtonHandler.js'
+import { addSurveyButtonHandler as addSurveyButtonHandlerForSurveys } from './src/components/surveyButtonHandler.js'
+import { addModalWindow } from './src/components/addButtonHandler.js'
+import { addDownloadButtonHandler } from './src/components/downloadButtonHandler.js'
+import { addEditButtonHandler } from './src/components/editButtonHandler.js'
 
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -50,6 +53,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             menu = document.querySelector(`#loadDataBtn2`).nextElementSibling;
             addSurveyButtonHandlerForSurveys(survey.id)
             menu.appendChild(button);
+
+            menu = document.querySelector(`#loadDataBtn6`);
+            addModalWindow(menu)
         }
     } catch (error) {
         console.error('Ошибка при загрузке количества обследований:', error);

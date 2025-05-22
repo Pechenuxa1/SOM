@@ -106,7 +106,7 @@ function createFormDownloadContent(modal, modalContent, i) {
 }
 
 
-async function addDownloadButtonHandler(downloadButton) {
+export async function addDownloadButtonHandler(downloadButton) {
     downloadButton.addEventListener('click', async function() {
         if (!currentSurveyId) {
             alert('Сначала выберите обследование');

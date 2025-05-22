@@ -123,7 +123,7 @@ function createFormContent(modal, modalContent) {
 }
 
 
-async function addModalWindow(menu) {
+export async function addModalWindow(menu) {
     const modal = document.createElement('div');
     modal.id = 'modalForm';
     modal.className = 'modal hidden';
@@ -146,10 +146,3 @@ async function addModalWindow(menu) {
         modal.classList.remove('hidden');
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const menu = document.querySelector(`#loadDataBtn6`);
-
-    addModalWindow(menu)
-});

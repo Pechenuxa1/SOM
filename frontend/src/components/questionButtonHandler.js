@@ -108,7 +108,7 @@ async function handleCheckboxChangeForQuestions(e) {
 }
 
 
-async function addSurveyButtonHandler(surveyId) {
+export async function addSurveyButtonHandler(surveyId) {
     let tableContainer = document.getElementById('tableContainer');
     let tableButtons = document.getElementById('tableButtons');
     let loadingIndicator = document.getElementById('loadingIndicator');

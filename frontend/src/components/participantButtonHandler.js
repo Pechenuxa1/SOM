@@ -63,7 +63,7 @@ async function updateParticipantsTable(data) {
 }
 
 
-async function addParticipantsButtonHandler() {
+export async function addParticipantsButtonHandler() {
     const API_URL = `/api/subjects`;
     let tableContainer = document.getElementById('tableContainer');
     let loadingIndicator = document.getElementById('loadingIndicator');
