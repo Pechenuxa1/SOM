@@ -1,11 +1,9 @@
-let currentSurveyId = null;
-let tableHeader;
-let tableBody;
-let tableContainer;
-let errorMessage;
-let tableButtons;
-let extraButtonsContainer;
-let loadingIndicator;
+import { handleCheckboxChangeForFile } from "./fileButtonHandler.js";
+import { handleCheckboxChangeForHunt } from "./huntButtonHandler.js";
+import { handleCheckboxChangeForQuestions } from "./questionButtonHandler.js";
+import { addDownloadButtonHandler } from "./downloadButtonHandler.js"
+import { addEditButtonHandler } from "./editButtonHandler.js"
+
 
 async function updateTable(data) {
     const sessions = data.sessions;
@@ -105,18 +103,13 @@ async function updateTable(data) {
 }
 
 
-async function handleCheckboxChange(e) {
+export async function handleCheckboxChange(e, surveyId) {
     const isChecked = e.target.checked;
-
-    if (!currentSurveyId) {
-        console.warn('Обследование не выбрано');
-        return;
-    }
 
     try {
         loadingIndicator.classList.remove('hidden');
         
-        const response = await fetch(`/api/sessions/${currentSurveyId}?sort=${isChecked}`, {
+        const response = await fetch(`/api/sessions/${surveyId}?sort=${isChecked}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,19 +132,27 @@ async function handleCheckboxChange(e) {
 }
 
 
-export async function addSurveyButtonHandler(surveyId) {
+export async function addSurveyButtonHandler(button, surveyId) {
+    let checkbox = document.getElementById('filter-checkbox');
     button.addEventListener('click', async function() {
-        checkbox.removeEventListener('change', handleCheckboxChangeForFile)
-        checkbox.removeEventListener('change', handleCheckboxChangeForQuestions)
-        checkbox.removeEventListener('change', handleCheckboxChangeForHunt)
-        checkbox.addEventListener('change', handleCheckboxChange);
+        // if (checkbox && checkbox.parentNode) {
+        //     const newCheckbox = checkbox.cloneNode(true);
+        //     checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+        //     checkbox = newCheckbox;   
+        // }
+        checkbox.onchange = (e) => handleCheckboxChange(e, surveyId)
+        //checkbox.addEventListener('change', (e) => handleCheckboxChange(e, surveyId));
         try {
-            currentSurveyId = surveyId;
             loadingIndicator.classList.remove('hidden');
             tableContainer.classList.add('hidden');
             errorMessage.classList.add('hidden');
             extraButtonsContainer.innerHTML = '';
             tableButtons.classList.add('hidden');
+            const downloadButton = document.getElementById('downloadButton');
+            const editButton = document.getElementById('editButton');
+
+            addDownloadButtonHandler(downloadButton, surveyId)
+            addEditButtonHandler(editButton, surveyId)
             
             const API_URL = `/api/sessions/${surveyId}`;
             const response = await fetch(API_URL);

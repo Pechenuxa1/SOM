@@ -1,3 +1,5 @@
+import { createFileForm } from "./utils.js";
+
 async function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
     return fileInput.files;
@@ -15,16 +17,16 @@ function createFormContent(modal, modalContent, surveyId) {
 
     form.appendChild(createFileForm('file-question', 'Прикрепить файл опросников'));
     form.appendChild(createFileForm('file-hunt', 'Прикрепить файл HUNT'));
-    form.appendChild(createFileForm('file-csv', 'Прикрепить файлы csv', multiple=true));
-    form.appendChild(createFileForm('file-ecg', 'Прикрепить файлы ecg', multiple=true));
-    form.appendChild(createFileForm('file-hr', 'Прикрепить файлы hr', multiple=true));
-    form.appendChild(createFileForm('file-iqdat', 'Прикрепить файлы iqdat', multiple=true));
-    form.appendChild(createFileForm('file-mp4', 'Прикрепить файлы mp4', multiple=true));
-    form.appendChild(createFileForm('file-rr', 'Прикрепить файлы rr', multiple=true));
-    form.appendChild(createFileForm('file-sm', 'Прикрепить файлы sm', multiple=true));
-    form.appendChild(createFileForm('file-tmk', 'Прикрепить файлы tmk', multiple=true));
-    form.appendChild(createFileForm('file-txt', 'Прикрепить файлы txt', multiple=true));
-    form.appendChild(createFileForm('file-other', 'Прикрепить другие файлы', multiple=true));
+    form.appendChild(createFileForm('file-csv', 'Прикрепить файлы csv', true));
+    form.appendChild(createFileForm('file-ecg', 'Прикрепить файлы ecg', true));
+    form.appendChild(createFileForm('file-hr', 'Прикрепить файлы hr', true));
+    form.appendChild(createFileForm('file-iqdat', 'Прикрепить файлы iqdat', true));
+    form.appendChild(createFileForm('file-mp4', 'Прикрепить файлы mp4', true));
+    form.appendChild(createFileForm('file-rr', 'Прикрепить файлы rr', true));
+    form.appendChild(createFileForm('file-sm', 'Прикрепить файлы sm', true));
+    form.appendChild(createFileForm('file-tmk', 'Прикрепить файлы tmk', true));
+    form.appendChild(createFileForm('file-txt', 'Прикрепить файлы txt', true));
+    form.appendChild(createFileForm('file-other', 'Прикрепить другие файлы', true));
 
 
     const submitBtn = document.createElement('button');
@@ -38,7 +40,6 @@ function createFormContent(modal, modalContent, surveyId) {
         submitBtn.textContent = 'Отправка...';
 
         try {
-            let API_URL = `${window.APP_CONFIG.API_URL}`
 
             const formData = new FormData();
 
@@ -102,12 +103,8 @@ function createFormContent(modal, modalContent, surveyId) {
 }
 
 
-export async function addEditButtonHandler(editButton) {
+export async function addEditButtonHandler(editButton, surveyId) {
     editButton.addEventListener('click', function() {
-        if (!currentSurveyId) {
-            alert('Сначала выберите обследование');
-            return;
-        }
 
         const modal = document.createElement('div');
         modal.id = 'modalForm';
@@ -128,7 +125,7 @@ export async function addEditButtonHandler(editButton) {
             modal.classList.add('hidden');
         });
         
-        createFormContent(modal, modalContent, currentSurveyId);
+        createFormContent(modal, modalContent, surveyId);
         modal.classList.remove('hidden');
     });
 }

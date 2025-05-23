@@ -1,4 +1,8 @@
-export async function addSurveyButtonHandler(surveyId) {
+import { addDownloadButtonHandler } from "./downloadButtonHandler.js"
+import { addEditButtonHandler } from "./editButtonHandler.js"
+
+
+export async function addSurveyButtonHandler(button, surveyId) {
     let tableButtons = document.getElementById('tableButtons');
     let tableContainer = document.getElementById('tableContainer');
     let extraButtonsContainer = document.getElementById('extraButtonsContainer');
@@ -7,6 +11,11 @@ export async function addSurveyButtonHandler(surveyId) {
         extraButtonsContainer.innerHTML = '';
         tableButtons.classList.add('hidden');
         tableContainer.classList.add('hidden');
+        const downloadButton = document.getElementById('downloadButton');
+        const editButton = document.getElementById('editButton');
+
+        addDownloadButtonHandler(downloadButton, surveyId)
+        addEditButtonHandler(editButton, surveyId)
     
         try {
             const response = await fetch(`/api/files/other/${surveyId}/`);

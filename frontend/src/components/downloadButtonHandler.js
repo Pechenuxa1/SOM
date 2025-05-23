@@ -106,12 +106,8 @@ function createFormDownloadContent(modal, modalContent, i) {
 }
 
 
-export async function addDownloadButtonHandler(downloadButton) {
+export async function addDownloadButtonHandler(downloadButton, surveyId) {
     downloadButton.addEventListener('click', async function() {
-        if (!currentSurveyId) {
-            alert('Сначала выберите обследование');
-            return;
-        }
 
         const modal = document.createElement('div');
         modal.id = 'modalForm';
@@ -132,7 +128,7 @@ export async function addDownloadButtonHandler(downloadButton) {
             modal.classList.add('hidden');
         });
         
-        createFormDownloadContent(modal, modalContent, currentSurveyId);
+        createFormDownloadContent(modal, modalContent, surveyId);
         modal.classList.remove('hidden');
     });
 }

@@ -5,8 +5,6 @@ import { addParticipantsButtonHandler } from './src/components/participantButton
 import { addSurveyButtonHandler as addSurveyButtonHandlerForQuestions } from './src/components/questionButtonHandler.js'
 import { addSurveyButtonHandler as addSurveyButtonHandlerForSurveys } from './src/components/surveyButtonHandler.js'
 import { addModalWindow } from './src/components/addButtonHandler.js'
-import { addDownloadButtonHandler } from './src/components/downloadButtonHandler.js'
-import { addEditButtonHandler } from './src/components/editButtonHandler.js'
 
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -21,12 +19,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         let menu = null;
         let button = null;
 
-
-        const downloadButton = document.getElementById('downloadButton');
-        const editButton = document.getElementById('editButton');
-
-        addDownloadButtonHandler(downloadButton)
-        addEditButtonHandler(editButton)
         addParticipantsButtonHandler()
         
         for (const survey of data.surveys) {
@@ -35,23 +27,39 @@ document.addEventListener('DOMContentLoaded', async function() {
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn7`).nextElementSibling;
-            addSurveyButtonHandlerForFiles(survey.id);
+            addSurveyButtonHandlerForFiles(button, survey.id);
             menu.appendChild(button);
+
+            button = document.createElement('button');
+            button.className = 'dropdown-button';
+            button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn5`).nextElementSibling;
-            addSurveyButtonHandlerForHunt(survey.id)
+            addSurveyButtonHandlerForHunt(button, survey.id)
             menu.appendChild(button);
+
+            button = document.createElement('button');
+            button.className = 'dropdown-button';
+            button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn4`).nextElementSibling;
-            addSurveyButtonHandlerForOtherFiles(survey.id)
+            addSurveyButtonHandlerForOtherFiles(button, survey.id)
             menu.appendChild(button);
+
+            button = document.createElement('button');
+            button.className = 'dropdown-button';
+            button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn3`).nextElementSibling;
-            addSurveyButtonHandlerForQuestions(survey.id)
+            addSurveyButtonHandlerForQuestions(button, survey.id)
             menu.appendChild(button);
 
+            button = document.createElement('button');
+            button.className = 'dropdown-button';
+            button.textContent = `Обследование ${survey.number}`;
+
             menu = document.querySelector(`#loadDataBtn2`).nextElementSibling;
-            addSurveyButtonHandlerForSurveys(survey.id)
+            addSurveyButtonHandlerForSurveys(button, survey.id)
             menu.appendChild(button);
 
             menu = document.querySelector(`#loadDataBtn6`);

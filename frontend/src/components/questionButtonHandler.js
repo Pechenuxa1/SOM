@@ -1,3 +1,10 @@
+import { handleCheckboxChangeForFile } from "./fileButtonHandler.js";
+import { handleCheckboxChange } from "./surveyButtonHandler.js";
+import { handleCheckboxChangeForHunt } from "./huntButtonHandler.js";
+import { addDownloadButtonHandler } from "./downloadButtonHandler.js"
+import { addEditButtonHandler } from "./editButtonHandler.js"
+
+
 async function updateQuestionsTable(data) {
     const questions = data.questions;
                 
@@ -74,18 +81,13 @@ async function updateQuestionsTable(data) {
 }
 
 
-async function handleCheckboxChangeForQuestions(e) {
+export async function handleCheckboxChangeForQuestions(e, surveyId) {
     const isChecked = e.target.checked;
-
-    if (!currentSurveyId) {
-        console.warn('Обследование не выбрано');
-        return;
-    }
 
     try {
         loadingIndicator.classList.remove('hidden');
         
-        const response = await fetch(`/api/questions/${currentSurveyId}?sort=${isChecked}`, {
+        const response = await fetch(`/api/questions/${surveyId}?sort=${isChecked}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -108,7 +110,7 @@ async function handleCheckboxChangeForQuestions(e) {
 }
 
 
-export async function addSurveyButtonHandler(surveyId) {
+export async function addSurveyButtonHandler(button, surveyId) {
     let tableContainer = document.getElementById('tableContainer');
     let tableButtons = document.getElementById('tableButtons');
     let loadingIndicator = document.getElementById('loadingIndicator');
@@ -117,19 +119,26 @@ export async function addSurveyButtonHandler(surveyId) {
     let checkbox = document.getElementById('filter-checkbox');
 
     button.addEventListener('click', async function() {
-        checkbox.removeEventListener('change', handleCheckboxChangeForFile)
-        checkbox.removeEventListener('change', handleCheckboxChange)
-        checkbox.removeEventListener('change', handleCheckboxChangeForHunt)
-        checkbox.addEventListener('change', handleCheckboxChangeForQuestions)
+        // if (checkbox && checkbox.parentNode) {
+        //     const newCheckbox = checkbox.cloneNode(true);
+        //     checkbox.parentNode.replaceChild(newCheckbox, checkbox);
+        //     checkbox = newCheckbox;   
+        // }
+        checkbox.onchange = (e) => handleCheckboxChangeForQuestions(e, surveyId)
+        //checkbox.addEventListener('change', (e) => handleCheckboxChangeForQuestions(e, surveyId))
         try {
-            currentSurveyId = surveyId;
             loadingIndicator.classList.remove('hidden');
             tableContainer.classList.add('hidden');
             errorMessage.classList.add('hidden');
             extraButtonsContainer.innerHTML = '';
             tableButtons.classList.add('hidden');
+            const downloadButton = document.getElementById('downloadButton');
+            const editButton = document.getElementById('editButton');
+
+            addDownloadButtonHandler(downloadButton, surveyId)
+            addEditButtonHandler(editButton, surveyId)
             
-            API_URL = `/api/questions/${surveyId}`;
+            let API_URL = `/api/questions/${surveyId}`;
             const response = await fetch(API_URL);
             
             if (!response.ok) {

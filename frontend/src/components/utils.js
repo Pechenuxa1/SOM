@@ -1,4 +1,4 @@
-function createFileForm(name, label, multiple = false) {
+export function createFileForm(name, label, multiple = false) {
     const fileFormGroup = document.createElement('div');
     fileFormGroup.className = 'form-group';
 

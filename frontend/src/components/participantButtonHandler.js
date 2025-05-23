@@ -69,6 +69,7 @@ export async function addParticipantsButtonHandler() {
     let loadingIndicator = document.getElementById('loadingIndicator');
     let errorMessage = document.getElementById('errorMessage');
     let extraButtonsContainer = document.getElementById('extraButtonsContainer');
+    const loadBtn = document.getElementById('loadDataBtn');
     loadBtn.addEventListener('click', async function() {
         try {
             loadingIndicator.classList.remove('hidden');
