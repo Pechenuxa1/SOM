@@ -1,6 +1,6 @@
 import { createFileForm } from "./utils.js";
 
-async function getFilesFromFormData(form, name) {
+function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
     return fileInput.files;
 }
@@ -13,6 +13,7 @@ function createFormContent(modal, modalContent, surveyId) {
 
     const form = document.createElement('form');
     form.id = 'dataForm';
+    form.enctype = 'multipart/form-data';
     modalContent.appendChild(form);
 
     form.appendChild(createFileForm('file-question', 'Прикрепить файл опросников'));
@@ -89,6 +90,7 @@ function createFormContent(modal, modalContent, surveyId) {
             let result = await response.json();
 
             modal.classList.add('hidden');
+            form.reset();
         } catch (error) {
             console.error('Ошибка при отправке:', error);
             alert(`Ошибка: ${error.message}`);

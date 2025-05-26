@@ -20,9 +20,11 @@ UPLOAD_DIR = Path("/data")
 
 def update_survey_hunt(
     survey_number_id: int = Path(),
-    hunt_file: UploadFile = File(),
+    hunt_file: UploadFile = File(None),
     db: Session = Depends(get_session)
 ):
+    if not hunt_file:
+        return
     contents = hunt_file.file.read()
 
     df = pd.read_excel(BytesIO(contents))

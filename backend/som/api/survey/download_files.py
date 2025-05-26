@@ -44,20 +44,26 @@ def download_files(survey_number_id: int = Path(), file_types: list[str] = Query
     if not all(file_type in dict_file_types for file_type in file_types):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Some file types not exists")
     
-    sessions: list[ModelSession] = db.execute(select(ModelSession).filter(ModelSession.survey_number_id == survey_number_id)).all()
+    sessions: list[ModelSession] = db.execute(select(ModelSession).filter(ModelSession.survey_number_id == survey_number_id)).scalars().all()
     if not sessions:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found sessions with survey_number_id {survey_number_id}")
     folder_paths = []
     for file_type in file_types:
         if file_type == "questions":
-            folder_paths.append(sessions[0].question.path.split("/")[:-1])
+            folder_paths.append(os.path.join(*sessions[0].question.path.split("/")[:-1]))
         elif file_type == "hunt":
-            folder_paths.append(sessions[0].hunt.path.split("/")[:-1])
+            folder_paths.append(os.path.join(*sessions[0].hunt.path.split("/")[:-1]))
         else:
-            db_file = db.execute(select(dict_file_types[file_type]).where(dict_file_types[file_type].session_id.in_([session.id for session in sessions]))).scalar()
-            folder_paths.append(db_file.path.split("/")[:-1])
+            db_file = db.execute(
+                select(dict_file_types[file_type])
+                .where(dict_file_types[file_type].session_id.in_([session.id for session in sessions]))
+            ).scalar()
+            path = "/" + os.path.join(*db_file.path.split("/")[:-1])
+            folder_paths.append(path)
 
     zip_buffer = io.BytesIO()
+
+    print(folder_paths)
 
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for folder_path in folder_paths:

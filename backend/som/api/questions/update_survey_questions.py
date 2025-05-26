@@ -34,9 +34,11 @@ UPLOAD_DIR = Path("/data/")
 
 def update_survey_questions(
     survey_number_id: int = Path(),
-    questions_file: UploadFile = File(),
+    questions_file: UploadFile = File(None),
     db: Session = Depends(get_session)
 ):
+    if not questions_file:
+        return
     contents = questions_file.file.read()
 
     df = pd.read_excel(BytesIO(contents))

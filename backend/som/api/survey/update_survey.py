@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from sqlalchemy.orm import Session
 from schemas.survey_number_schema import SurveyNumberResponse
@@ -24,9 +25,12 @@ UPLOAD_DIR = Path("/data/")
 def save_files(files: list[UploadFile], file_type: str, survey_number: int):
     if not files:
         return
+    
+    save_dir = UPLOAD_DIR / str(survey_number) / file_type
+    os.makedirs(save_dir, exist_ok=True)
 
     for file in files:
-        file_path = UPLOAD_DIR / str(survey_number) / file_type / file.filename
+        file_path = save_dir / file.filename
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
@@ -56,7 +60,7 @@ def update_survey(
     txt_files: list[UploadFile] = File(None),
     other_files: list[UploadFile] = File(None),
     db: Session = Depends(get_session),
-) -> SurveyNumberResponse:
+):
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
     if not survey_number:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found survey with survey_number_id {survey_number_id}")

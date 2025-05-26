@@ -23,7 +23,6 @@ def save_files(files: list[UploadFile], file_type: str, survey_number: int):
         return
     
     save_dir = UPLOAD_DIR / str(survey_number) / file_type
-    
     os.makedirs(save_dir, exist_ok=True)
 
     for file in files:
