@@ -19,15 +19,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         let menu = null;
         let button = null;
 
-        addParticipantsButtonHandler()
+        await addParticipantsButtonHandler()
         
+        menu = document.querySelector(`#loadDataBtn6`);
+        await addModalWindow(menu)
         for (const survey of data.surveys) {
             button = document.createElement('button');
             button.className = 'dropdown-button';
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn7`).nextElementSibling;
-            addSurveyButtonHandlerForFiles(button, survey.id);
+            await addSurveyButtonHandlerForFiles(button, survey.id);
             menu.appendChild(button);
 
             button = document.createElement('button');
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn5`).nextElementSibling;
-            addSurveyButtonHandlerForHunt(button, survey.id)
+            await addSurveyButtonHandlerForHunt(button, survey.id)
             menu.appendChild(button);
 
             button = document.createElement('button');
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn4`).nextElementSibling;
-            addSurveyButtonHandlerForOtherFiles(button, survey.id)
+            await addSurveyButtonHandlerForOtherFiles(button, survey.id)
             menu.appendChild(button);
 
             button = document.createElement('button');
@@ -51,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn3`).nextElementSibling;
-            addSurveyButtonHandlerForQuestions(button, survey.id)
+            await addSurveyButtonHandlerForQuestions(button, survey.id)
             menu.appendChild(button);
 
             button = document.createElement('button');
@@ -59,11 +61,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             button.textContent = `Обследование ${survey.number}`;
 
             menu = document.querySelector(`#loadDataBtn2`).nextElementSibling;
-            addSurveyButtonHandlerForSurveys(button, survey.id)
+            await addSurveyButtonHandlerForSurveys(button, survey.id)
             menu.appendChild(button);
-
-            menu = document.querySelector(`#loadDataBtn6`);
-            addModalWindow(menu)
         }
     } catch (error) {
         console.error('Ошибка при загрузке количества обследований:', error);

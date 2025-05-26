@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from sqlalchemy.orm import Session
 from schemas.survey_number_schema import SurveyNumberResponse
@@ -20,9 +21,13 @@ UPLOAD_DIR = Path("/data/")
 def save_files(files: list[UploadFile], file_type: str, survey_number: int):
     if not files:
         return
+    
+    save_dir = UPLOAD_DIR / str(survey_number) / file_type
+    
+    os.makedirs(save_dir, exist_ok=True)
 
     for file in files:
-        file_path = UPLOAD_DIR / str(survey_number) / file_type / file.filename
+        file_path = save_dir / file.filename
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 

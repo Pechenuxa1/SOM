@@ -53,18 +53,24 @@ def create_survey_questions(
         for _, row in df.iterrows():
             subject = row['subj_id']
             subject_db: Subject = db.execute(select(Subject).where(Subject.subject == subject)).scalar()
+
+            sex = next((row[col] for col in df.columns if "sex" in col.lower()), None)
+            sex = "male" if sex == 1 else "female" if sex == 2 else None
+            
+            foreign = next((row[col] for col in df.columns if "foreign" in col.lower()), None)
+            foreign = True if foreign == 1 else False if foreign == 0 else None
+
+            birth_date = next((row[col] for col in df.columns if "birth_date" in col.lower()), None)
+            
             if not subject_db:
-                sex = next((row[col] for col in df.columns if "sex" in col.lower()), None)
-                sex = "male" if sex == 1 else "female" if sex == 2 else None
-                
-                foreign = next((row[col] for col in df.columns if "foreign" in col.lower()), None)
-                foreign = True if foreign == 1 else False if foreign == 0 else None
-
-                birth_date = next((row[col] for col in df.columns if "birth_date" in col.lower()), None)
-
                 subject_db = Subject(sex=sex, foreign=foreign, birth_date=birth_date)
                 db.add(subject_db)
+                db.flush()
                 db.refresh(subject_db)
+            else:
+                subject_db.sex = sex
+                subject_db.foreign = foreign
+                subject_db.birth_date = birth_date
 
             question = Question(
                 path=file_path, 

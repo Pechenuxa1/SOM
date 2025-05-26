@@ -1,95 +1,82 @@
 import { createFileForm } from "./utils.js";
 
-
-async function getFilesFromFormData(form, name) {
+function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
-    return fileInput.files;
+    return fileInput?.files || [];
 }
 
-
-function createFormContent(modal, modalContent) {
+async function createFormContent(modal, modalContent) {
     const formTitle = document.createElement('h2');
     formTitle.textContent = 'Добавить обследование';
     modalContent.appendChild(formTitle);
 
     const form = document.createElement('form');
     form.id = 'dataForm';
+    form.enctype = 'multipart/form-data';
     modalContent.appendChild(form);
 
-    form.appendChild(createFileForm('file-question', 'Прикрепить файл опросников'));
-    form.appendChild(createFileForm('file-hunt', 'Прикрепить файл HUNT'));
-    form.appendChild(createFileForm('file-csv', 'Прикрепить файлы csv', true));
-    form.appendChild(createFileForm('file-ecg', 'Прикрепить файлы ecg', true));
-    form.appendChild(createFileForm('file-hr', 'Прикрепить файлы hr', true));
-    form.appendChild(createFileForm('file-iqdat', 'Прикрепить файлы iqdat', true));
-    form.appendChild(createFileForm('file-mp4', 'Прикрепить файлы mp4', true));
-    form.appendChild(createFileForm('file-rr', 'Прикрепить файлы rr', true));
-    form.appendChild(createFileForm('file-sm', 'Прикрепить файлы sm', true));
-    form.appendChild(createFileForm('file-tmk', 'Прикрепить файлы tmk', true));
-    form.appendChild(createFileForm('file-txt', 'Прикрепить файлы txt', true));
-    form.appendChild(createFileForm('file-other', 'Прикрепить другие файлы', true));
+    const formFields = [
+        { id: 'file-question', label: 'Прикрепить файл опросников', multiple: false },
+        { id: 'file-hunt', label: 'Прикрепить файл HUNT', multiple: false },
+        { id: 'file-csv', label: 'Прикрепить файлы csv', multiple: true },
+        { id: 'file-ecg', label: 'Прикрепить файлы ecg', multiple: true },
+        { id: 'file-hr', label: 'Прикрепить файлы hr', multiple: true },
+        { id: 'file-iqdat', label: 'Прикрепить файлы iqdat', multiple: true },
+        { id: 'file-mp4', label: 'Прикрепить файлы mp4', multiple: true },
+        { id: 'file-rr', label: 'Прикрепить файлы rr', multiple: true },
+        { id: 'file-sm', label: 'Прикрепить файлы sm', multiple: true },
+        { id: 'file-tmk', label: 'Прикрепить файлы tmk', multiple: true },
+        { id: 'file-txt', label: 'Прикрепить файлы txt', multiple: true },
+        { id: 'file-other', label: 'Прикрепить другие файлы', multiple: true }
+    ];
 
+    formFields.forEach(field => {
+        form.appendChild(createFileForm(field.id, field.label, field.multiple));
+    });
 
     const submitBtn = document.createElement('button');
     submitBtn.type = 'submit';
     submitBtn.className = 'submit-btn';
     submitBtn.textContent = 'Отправить';
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault()
 
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
         submitBtn.disabled = true;
         submitBtn.textContent = 'Отправка...';
 
         try {
-
             const formData = new FormData();
 
-            Array.from(getFilesFromFormData(form, "file-question")).forEach(file => {
-                formData.append('questions_file', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-hunt")).forEach(file => {
-                formData.append('hunt_file', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-csv")).forEach(file => {
-                formData.append('csv_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-ecg")).forEach(file => {
-                formData.append('ecg_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-hr")).forEach(file => {
-                formData.append('hr_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-iqdat")).forEach(file => {
-                formData.append('iqdat_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-mp4")).forEach(file => {
-                formData.append('mp4_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-rr")).forEach(file => {
-                formData.append('rr_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-tmk")).forEach(file => {
-                formData.append('tmk_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-txt")).forEach(file => {
-                formData.append('txt_files', file);
-            });
-            Array.from(getFilesFromFormData(form, "file-other")).forEach(file => {
-                formData.append('other_files', file);
+            formFields.forEach(field => {
+                const files = Array.from(getFilesFromFormData(form, field.id));
+                const fieldName = field.id.replace('file-', '') + '_files';
+                
+                if (files.length > 0) {
+                    files.forEach(file => {
+                        formData.append(fieldName, file);
+                    });
+                }
             });
 
-            let response = await fetch('/api/surveys/', {
+            const response = await fetch('/api/surveys/', {
                 method: 'POST',
                 body: formData,
             });
 
             if (!response.ok) {
-                throw new Error(`Ошибка: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(
+                    errorData.message || `Ошибка сервера: ${response.status}`
+                );
             }
 
-            let result = await response.json();
+            const result = await response.json();
 
+            alert(`Обследование №${result.number} успешно создано`);
+            
             modal.classList.add('hidden');
+            form.reset();
+            
         } catch (error) {
             console.error('Ошибка при отправке:', error);
             alert(`Ошибка: ${error.message}`);
@@ -97,13 +84,12 @@ function createFormContent(modal, modalContent) {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Отправить';
         }
-    })
+    });
+
     form.appendChild(submitBtn);
     form.style.maxHeight = '500px';
     form.style.overflowY = 'auto';
-
 }
-
 
 export async function addModalWindow(menu) {
     const modal = document.createElement('div');
@@ -120,11 +106,10 @@ export async function addModalWindow(menu) {
         const closeBtn = document.createElement('span');
         closeBtn.className = 'close-btn';
         closeBtn.innerHTML = '&times;';
+        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
         modalContent.appendChild(closeBtn);
-        closeBtn.addEventListener('click', function () {
-            modal.classList.add('hidden');
-        });
-        createFormContent(modal, modalContent);
+        
+        await createFormContent(modal, modalContent);
         modal.classList.remove('hidden');
     });
 }

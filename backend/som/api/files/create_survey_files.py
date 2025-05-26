@@ -53,14 +53,15 @@ def create_survey_files(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"No such extension {file_extension}")
     
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
-
     for file in files:
         filename = file.filename.split(".")[0]
-
+        filename = filename.rsplit('_', 1)[0]
         subject_db: Subject = db.execute(select(Subject).where(Subject.subject == filename)).scalar()
         if not subject_db:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found subject with id {filename}")
-
+            subject_db = Subject(subject=filename)
+            db.add(subject_db)
+            db.flush()
+            # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found subject with id {filename}")
         session = db.execute(
                 select(ModelSession).filter(ModelSession.survey_number_id == survey_number_id, ModelSession.subject_id == subject_db.id)
         ).scalar()
@@ -69,13 +70,10 @@ def create_survey_files(
             db.add(session)
             db.flush()
             db.refresh(session)
-
         file_path = str(UPLOAD_DIR / str(survey_number.number) / "files" / file_extension / file.filename)
-        
         if file_extension == "other":
             db.add(dict_extensions[file_extension](path=file_path, survey_number_id=survey_number_id))
         else:
             if not db.execute(select(dict_extensions[file_extension]).filter(dict_extensions[file_extension].session_id == session.id)).scalar():
                 db.add(dict_extensions[file_extension](path=file_path, session_id=session.id))
-
     db.flush()
