@@ -135,13 +135,7 @@ export async function handleCheckboxChange(e, surveyId) {
 export async function addSurveyButtonHandler(button, surveyId) {
     let checkbox = document.getElementById('filter-checkbox');
     button.addEventListener('click', async function() {
-        // if (checkbox && checkbox.parentNode) {
-        //     const newCheckbox = checkbox.cloneNode(true);
-        //     checkbox.parentNode.replaceChild(newCheckbox, checkbox);
-        //     checkbox = newCheckbox;   
-        // }
         checkbox.onchange = (e) => handleCheckboxChange(e, surveyId)
-        //checkbox.addEventListener('change', (e) => handleCheckboxChange(e, surveyId));
         try {
             loadingIndicator.classList.remove('hidden');
             tableContainer.classList.add('hidden');

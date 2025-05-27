@@ -1,4 +1,4 @@
-import { createFileForm } from "./utils.js";
+import { createFileForm, getOrCreateModal } from "./utils.js";
 
 function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
@@ -109,26 +109,7 @@ function createFormContent(modal, modalContent, surveyId) {
 
 export async function addEditButtonHandler(editButton, surveyId) {
     editButton.addEventListener('click', function() {
-
-        const modal = document.createElement('div');
-        modal.id = 'modalForm';
-        modal.className = 'modal hidden';
-        document.body.appendChild(modal);
-
-        const modalContent = document.createElement('div');
-        modalContent.className = 'modal-content';
-        modal.appendChild(modalContent);
-        modalContent.innerHTML = '';
-        
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '&times;';
-        modalContent.appendChild(closeBtn);
-        
-        closeBtn.addEventListener('click', function() {
-            modal.classList.add('hidden');
-        });
-        
+        const { modal, modalContent } = getOrCreateModal();
         createFormContent(modal, modalContent, surveyId);
         modal.classList.remove('hidden');
     });

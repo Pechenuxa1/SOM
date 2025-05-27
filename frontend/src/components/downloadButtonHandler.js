@@ -1,3 +1,5 @@
+import { getOrCreateModal } from "./utils.js";
+
 function createCheckboxForm(name, labelText, checked = false) {
     const formGroup = document.createElement('div');
     formGroup.className = 'form-group';
@@ -29,7 +31,6 @@ function createCheckboxForm(name, labelText, checked = false) {
 }
 
 function createFormDownloadContent(modal, modalContent, surveyId) {
-    modalContent.innerHTML = ''; // очищаем содержимое при каждом открытии
 
     const formTitle = document.createElement('h2');
     formTitle.textContent = 'Выберите файлы для скачивания';
@@ -120,30 +121,7 @@ function createFormDownloadContent(modal, modalContent, surveyId) {
 
 export async function addDownloadButtonHandler(downloadButton, surveyId) {
     downloadButton.addEventListener('click', function () {
-        let modal = document.getElementById('modalForm');
-        let modalContent;
-
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'modalForm';
-            modal.className = 'modal hidden';
-            document.body.appendChild(modal);
-
-            modalContent = document.createElement('div');
-            modalContent.className = 'modal-content';
-            modal.appendChild(modalContent);
-
-            const closeBtn = document.createElement('span');
-            closeBtn.className = 'close-btn';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.addEventListener('click', function () {
-                modal.classList.add('hidden');
-            });
-            modalContent.appendChild(closeBtn);
-        } else {
-            modalContent = modal.querySelector('.modal-content');
-        }
-
+        const { modal, modalContent } = getOrCreateModal();
         createFormDownloadContent(modal, modalContent, surveyId);
         modal.classList.remove('hidden');
     });

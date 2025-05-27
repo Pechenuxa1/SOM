@@ -1,4 +1,4 @@
-import { createFileForm } from "./utils.js";
+import { createFileForm, getOrCreateModal } from "./utils.js";
 
 function getFilesFromFormData(form, name) {
     const fileInput = form.querySelector(`#${name}`);
@@ -102,13 +102,7 @@ export async function addModalWindow(menu) {
     modal.appendChild(modalContent);
 
     menu.addEventListener('click', async () => {
-        modalContent.innerHTML = '';
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-        modalContent.appendChild(closeBtn);
-        
+        const { modal, modalContent } = getOrCreateModal();
         await createFormContent(modal, modalContent);
         modal.classList.remove('hidden');
     });
