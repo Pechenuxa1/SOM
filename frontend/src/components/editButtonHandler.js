@@ -89,6 +89,8 @@ function createFormContent(modal, modalContent, surveyId) {
 
             let result = await response.json();
 
+            alert(`Обследование №${result.number} успешно изменено`);
+
             modal.classList.add('hidden');
             form.reset();
         } catch (error) {

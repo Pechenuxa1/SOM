@@ -25,4 +25,4 @@ router.get("/total-number", response_model=SurveyTotalNumberResponse, status_cod
 
 router.get("/{survey_number_id}/download", status_code=status.HTTP_200_OK)(download_files)
 
-router.patch("/{survey_number_id}", status_code=status.HTTP_200_OK)(update_survey)
+router.patch("/{survey_number_id}", response_model=SurveyNumberResponse, status_code=status.HTTP_200_OK)(update_survey)

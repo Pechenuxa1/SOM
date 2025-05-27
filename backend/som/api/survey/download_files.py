@@ -63,15 +63,13 @@ def download_files(survey_number_id: int = Path(), file_types: list[str] = Query
 
     zip_buffer = io.BytesIO()
 
-    print(folder_paths)
-
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for folder_path in folder_paths:
+        for folder_path, file_type in zip(folder_paths, file_types):
             for root, _, files in os.walk(folder_path):
                 for file in files:
                     file_path = os.path.join(root, file)
                     arcname = os.path.relpath(file_path, folder_path)
-                    zip_file.write(file_path, arcname=arcname)
+                    zip_file.write(file_path, arcname=os.path.join(file_type, arcname))
 
     zip_buffer.seek(0)
     return StreamingResponse(

@@ -55,8 +55,8 @@ def create_survey_files(
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
     for file in files:
         filename = file.filename.split(".")[0]
-        filename = '_'.join(filename.split("_")[:3])
-        subject_db: Subject = db.execute(select(Subject).where(Subject.subject == filename)).scalar()
+        # filename = '_'.join(filename.split("_")[:3])
+        subject_db: Subject = db.execute(select(Subject).where(Subject.subject.like(f"%{filename}%"))).scalar()
         if not subject_db:
             # subject_db = Subject(subject=filename)
             # db.add(subject_db)

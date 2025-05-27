@@ -60,7 +60,7 @@ def update_survey(
     txt_files: list[UploadFile] = File(None),
     other_files: list[UploadFile] = File(None),
     db: Session = Depends(get_session),
-):
+) -> SurveyNumberResponse:
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
     if not survey_number:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found survey with survey_number_id {survey_number_id}")
@@ -95,3 +95,5 @@ def update_survey(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     db.commit()
+
+    return survey_number
