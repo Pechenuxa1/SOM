@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import traceback
 from sqlalchemy.orm import Session
 from schemas.survey_number_schema import SurveyNumberResponse
 import shutil
@@ -72,9 +71,7 @@ def create_survey(
 
     try:
         create_survey_questions(survey_number_id=survey_number.id, questions_file=questions_file, db=db)
-        print("aaaaaaaa")
         create_survey_hunt(survey_number_id=survey_number.id, hunt_file=hunt_file, db=db)
-        print("aaaaaaaa")
         create_survey_files(survey_number_id=survey_number.id, file_extension="csv", files=csv_files, db=db)
         create_survey_files(survey_number_id=survey_number.id, file_extension="ecg", files=ecg_files, db=db)
         create_survey_files(survey_number_id=survey_number.id, file_extension="hr", files=hr_files, db=db)
@@ -85,7 +82,7 @@ def create_survey(
         create_survey_files(survey_number_id=survey_number.id, file_extension="tmk", files=tmk_files, db=db)
         create_survey_files(survey_number_id=survey_number.id, file_extension="txt", files=txt_files, db=db)
         create_survey_files(survey_number_id=survey_number.id, file_extension="other", files=other_files, db=db)
-        print("aaaaaaaa")
+
         save_files([questions_file], "questions", survey_number=survey_number.number)
         save_files([hunt_file], "hunt", survey_number=survey_number.number)
         save_files(csv_files, "csv", survey_number=survey_number.number)
@@ -99,7 +96,6 @@ def create_survey(
         save_files(txt_files, "txt", survey_number=survey_number.number)
         save_files(other_files, "other", survey_number=survey_number.number)
     except Exception as e:
-        traceback.print_exc()
         delete_files([questions_file], "questions", survey_number=survey_number.number)
         delete_files([hunt_file], "hunt", survey_number=survey_number.number)
         delete_files(csv_files, "csv", survey_number=survey_number.number)
