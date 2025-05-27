@@ -38,32 +38,33 @@ def create_survey_questions(
     questions_file: UploadFile = File(None),
     db: Session = Depends(get_session)
 ):
+    print(1)
     if not questions_file:
+        print(2)
         return
-    
     contents = questions_file.file.read()
-
+    print(3)
     df = pd.read_excel(BytesIO(contents))
-
+    print(4)
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
 
     file_path = str(UPLOAD_DIR / str(survey_number.number) / "questions" / questions_file.filename)
-
+    print(5)
     if "subj_id" in df.columns:
         for _, row in df.iterrows():
             subject = row['subj_id']
             subject_db: Subject = db.execute(select(Subject).where(Subject.subject == subject)).scalar()
-
+            print(6)
             sex = next((row[col] for col in df.columns if "sex" in col.lower()), None)
             sex = "male" if sex == 1 else "female" if sex == 2 else None
-            
+            print(7)
             foreign = next((row[col] for col in df.columns if "foreign" in col.lower()), None)
             foreign = True if foreign == 1 else False if foreign == 0 else None
 
             birth_date = next((row[col] for col in df.columns if "birth_date" in col.lower()), None)
-            
+            print(8)
             if not subject_db:
-                subject_db = Subject(sex=sex, foreign=foreign, birth_date=birth_date)
+                subject_db = Subject(subject=subject, sex=sex, foreign=foreign, birth_date=birth_date)
                 db.add(subject_db)
                 db.flush()
                 db.refresh(subject_db)
@@ -71,11 +72,11 @@ def create_survey_questions(
                 subject_db.sex = sex
                 subject_db.foreign = foreign
                 subject_db.birth_date = birth_date
-
+            print(9)
             question = Question(
                 path=file_path, 
-                if_fill_sp_before = parse_psy_test_and_is_fill("sp_before", row, db),
-                if_fill_sp_after = parse_psy_test_and_is_fill("sp_after", row, db),
+                is_fill_sp_before = parse_psy_test_and_is_fill("sp_before", row, db),
+                is_fill_sp_after = parse_psy_test_and_is_fill("sp_after", row, db),
                 is_fill_st = parse_psy_test_and_is_fill("st", row, db),
                 is_fill_scs = parse_psy_test_and_is_fill("scs", row, db),
                 is_fill_sfa = parse_psy_test_and_is_fill("sfa", row, db),
@@ -85,11 +86,15 @@ def create_survey_questions(
             db.add(question)
             db.flush()
             db.refresh(question)
-
+            print(10)
             session = ModelSession(survey_number_id=survey_number_id, question_id=question.id, subject_id=subject_db.id)
+            print(11)
             db.add(session)
+            print(12)
     else:
+        print(13)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must have column subj_id")
-
+    print(14)
     db.flush()
+    print(15)
     

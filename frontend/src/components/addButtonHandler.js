@@ -16,7 +16,7 @@ async function createFormContent(modal, modalContent) {
     modalContent.appendChild(form);
 
     const formFields = [
-        { id: 'file-question', label: 'Прикрепить файл опросников', multiple: false },
+        { id: 'file-questions', label: 'Прикрепить файл опросников', multiple: false },
         { id: 'file-hunt', label: 'Прикрепить файл HUNT', multiple: false },
         { id: 'file-csv', label: 'Прикрепить файлы csv', multiple: true },
         { id: 'file-ecg', label: 'Прикрепить файлы ecg', multiple: true },
@@ -49,7 +49,13 @@ async function createFormContent(modal, modalContent) {
 
             formFields.forEach(field => {
                 const files = Array.from(getFilesFromFormData(form, field.id));
-                const fieldName = field.id.replace('file-', '') + '_files';
+                let fieldName;
+                if (field.id === "file-questions" || field.id === "file-hunt") {
+                    fieldName = field.id.replace('file-', '') + '_file';
+                }
+                else {
+                    fieldName = field.id.replace('file-', '') + '_files';
+                }
                 
                 if (files.length > 0) {
                     files.forEach(file => {

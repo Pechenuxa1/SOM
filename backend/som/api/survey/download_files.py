@@ -50,9 +50,11 @@ def download_files(survey_number_id: int = Path(), file_types: list[str] = Query
     folder_paths = []
     for file_type in file_types:
         if file_type == "questions":
-            folder_paths.append(os.path.join(*sessions[0].question.path.split("/")[:-1]))
+            path = "/" + os.path.join(*sessions[0].question.path.split("/")[:-1])
+            folder_paths.append(path)
         elif file_type == "hunt":
-            folder_paths.append(os.path.join(*sessions[0].hunt.path.split("/")[:-1]))
+            path = "/" + os.path.join(*sessions[0].hunt.path.split("/")[:-1])
+            folder_paths.append(path)
         else:
             db_file = db.execute(
                 select(dict_file_types[file_type])
