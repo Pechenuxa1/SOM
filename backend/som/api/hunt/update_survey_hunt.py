@@ -31,7 +31,7 @@ def update_survey_hunt(
 
     survey_number: SurveyNumber = db.execute(select(SurveyNumber).where(SurveyNumber.id == survey_number_id)).scalar()
 
-    file_path = UPLOAD_DIR / survey_number.number / "hunt" / hunt_file.filename
+    file_path = str(UPLOAD_DIR / str(survey_number.number) / "hunt" / hunt_file.filename)
 
     if "subj_id" in df.columns:
         for _, row in df.iterrows():
@@ -49,22 +49,30 @@ def update_survey_hunt(
                     detail=f"Not found session with survey_number_id {survey_number_id} and subject_id {subject_db.id}"
                 )
             
-            is_fill = all([
-                next((not pd.isna(row[col]) for col in df.columns if "premature_stop" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "wrong_stop" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "correct_stop_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "go_misses" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "wrong_button" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "correct_go_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_mean" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_std" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "average_rt_practice" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "timely_go_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_box_cox" in col), None),
-            ])
-
-            hunt = db.get(Hunt, session.hunt_id)
-            hunt.is_fill = is_fill
+            # is_fill = all([
+            #     next((not pd.isna(row[col]) for col in df.columns if "premature_stop" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "wrong_stop" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "correct_stop_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "go_misses" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "wrong_button" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "correct_go_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_mean" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_std" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "average_rt_practice" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "timely_go_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_box_cox" in col), None),
+            # ])
+            is_fill = True
+            if not session.hunt_id:
+                hunt = Hunt(is_fill=is_fill, path=file_path)
+                db.add(hunt)
+                db.flush()
+                db.refresh(hunt)
+                session.hunt_id = hunt.id
+            else:
+                hunt = db.get(Hunt, session.hunt_id)
+                hunt.is_fill = is_fill
+                hunt.path = file_path
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must have column subj_id")
 

@@ -50,10 +50,16 @@ def download_files(survey_number_id: int = Path(), file_types: list[str] = Query
     folder_paths = []
     for file_type in file_types:
         if file_type == "questions":
-            path = "/" + os.path.join(*sessions[0].question.path.split("/")[:-1])
+            non_null_session = next((session for session in sessions if session.question is not None), None)
+            if not non_null_session:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions file")
+            path = "/" + os.path.join(*non_null_session.question.path.split("/")[:-1])
             folder_paths.append(path)
         elif file_type == "hunt":
-            path = "/" + os.path.join(*sessions[0].hunt.path.split("/")[:-1])
+            non_null_session = next((session for session in sessions if session.hunt is not None), None)
+            if not non_null_session:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No hunt file")
+            path = "/" + os.path.join(*non_null_session.hunt.path.split("/")[:-1])
             folder_paths.append(path)
         else:
             db_file = db.execute(

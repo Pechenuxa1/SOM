@@ -27,7 +27,7 @@ function createFormContent(modal, modalContent, surveyId) {
     form.appendChild(createFileForm('file-sm', 'Прикрепить файлы sm', true));
     form.appendChild(createFileForm('file-tmk', 'Прикрепить файлы tmk', true));
     form.appendChild(createFileForm('file-txt', 'Прикрепить файлы txt', true));
-    form.appendChild(createFileForm('file-other', 'Прикрепить другие файлы', true));
+    form.appendChild(createFileForm('file-other', 'Прикрепить общие файлы', true));
 
 
     const submitBtn = document.createElement('button');

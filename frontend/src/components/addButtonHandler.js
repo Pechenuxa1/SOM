@@ -27,7 +27,7 @@ async function createFormContent(modal, modalContent) {
         { id: 'file-sm', label: 'Прикрепить файлы sm', multiple: true },
         { id: 'file-tmk', label: 'Прикрепить файлы tmk', multiple: true },
         { id: 'file-txt', label: 'Прикрепить файлы txt', multiple: true },
-        { id: 'file-other', label: 'Прикрепить другие файлы', multiple: true }
+        { id: 'file-other', label: 'Прикрепить общие файлы', multiple: true }
     ];
 
     formFields.forEach(field => {

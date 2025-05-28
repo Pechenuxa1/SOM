@@ -54,7 +54,7 @@ def create_survey_questions(
             subject_db: Subject = db.execute(select(Subject).where(Subject.subject == subject)).scalar()
 
             sex = next((row[col] for col in df.columns if "sex" in col.lower()), None)
-            sex = "male" if sex == 1 else "female" if sex == 2 else None
+            sex = "male" if sex == 0 else "female" if sex == 1 else None
 
             foreign = next((row[col] for col in df.columns if "foreign" in col.lower()), None)
             foreign = True if foreign == 1 else False if foreign == 0 else None

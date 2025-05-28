@@ -50,19 +50,20 @@ def create_survey_hunt(
                 db.flush()
                 db.refresh(session)
             
-            is_fill = all([
-                next((not pd.isna(row[col]) for col in df.columns if "premature_stop" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "wrong_stop" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "correct_stop_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "go_misses" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "wrong_button" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "correct_go_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_mean" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_std" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "average_rt_practice" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "timely_go_pct" in col), None),
-                next((not pd.isna(row[col]) for col in df.columns if "lat_box_cox" in col), None),
-            ])
+            # is_fill = all([
+            #     next((not pd.isna(row[col]) for col in df.columns if "premature_stop" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "wrong_stop" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "correct_stop_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "go_misses" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "wrong_button" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "correct_go_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_mean" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_std" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "average_rt_practice" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "timely_go_pct" in col), None),
+            #     next((not pd.isna(row[col]) for col in df.columns if "lat_box_cox" in col), None),
+            # ])
+            is_fill = True
 
             hunt = Hunt(
                 is_fill=is_fill,
