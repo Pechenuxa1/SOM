@@ -15,7 +15,7 @@ async function updateParticipantsTable(data) {
                 'sex': 'Пол',
                 'foreign': 'Иностранец',
                 'birth_date': 'Дата рождения',
-                'sessions': 'Сессии'
+                'sessions': 'Обследования'
             };
             th.textContent = columnTitles[col] || col;
             if (col !== '№') {

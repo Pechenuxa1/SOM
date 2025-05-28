@@ -46,7 +46,7 @@ def delete_files(files: list[UploadFile], file_type: str, survey_number: int):
 
 
 def create_survey(
-    questions_file: UploadFile = File(None),
+    questions_file: UploadFile = File(),
     hunt_file: UploadFile = File(None),
     csv_files: list[UploadFile] = File(None),
     ecg_files: list[UploadFile] = File(None),
