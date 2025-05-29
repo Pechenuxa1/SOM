@@ -66,6 +66,8 @@ def download_files(survey_number_id: int = Path(), file_types: list[str] = Query
                 select(dict_file_types[file_type])
                 .where(dict_file_types[file_type].session_id.in_([session.id for session in sessions]))
             ).scalar()
+            if not db_file:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No {file_type} file")
             path = "/" + os.path.join(*db_file.path.split("/")[:-1])
             folder_paths.append(path)
 

@@ -72,7 +72,7 @@ async function createFormContent(modal, modalContent) {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
                 throw new Error(
-                    errorData.message || `Ошибка сервера: ${response.status}`
+                    errorData.detail || `Ошибка сервера: ${response.status}`
                 );
             }
 

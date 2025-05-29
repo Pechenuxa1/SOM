@@ -46,7 +46,7 @@ def delete_files(files: list[UploadFile], file_type: str, survey_number: int):
 
 
 def create_survey(
-    questions_file: UploadFile = File(),
+    questions_file: UploadFile = File(None),
     hunt_file: UploadFile = File(None),
     csv_files: list[UploadFile] = File(None),
     ecg_files: list[UploadFile] = File(None),
@@ -60,6 +60,8 @@ def create_survey(
     other_files: list[UploadFile] = File(None),
     db: Session = Depends(get_session),
 ) -> SurveyNumberResponse:
+    if not questions_file:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The questions file is required")
     last_session_number = db.execute(select(func.max(SurveyNumber.number))).scalar()
     if last_session_number is None:
         last_session_number = 0
