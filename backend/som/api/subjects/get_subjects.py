@@ -1,3 +1,4 @@
+from models.survey_number import SurveyNumber
 from fastapi import APIRouter, Depends, FastAPI, status
 from sqlalchemy.orm import Session
 from models.session import Session as ModelSession
@@ -14,5 +15,6 @@ def get_subjects(db: Session = Depends(get_session)):
     for subject in subjects:
         query = select(distinct(ModelSession.survey_number_id)).where(ModelSession.subject_id == subject.id)
         sessions = db.execute(query).scalars().all()
-        subject.sessions = sessions
+        survey_numbers = db.execute(select(SurveyNumber.number).where(SurveyNumber.id.in_(sessions))).scalars().all()
+        subject.sessions = survey_numbers
     return ListSubjectResponse(participants=subjects)
