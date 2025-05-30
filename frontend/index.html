@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOM</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+    <div class="app">
+        <div class="app-header">SOM DB</div>
+        
+        <button id="loadDataBtn" class="load-btn">Участники</button>
+        
+        <div class="menu-container">
+            <button id="loadDataBtn2" class="load-btn2">Обследования</button>
+            <div class="dropdown-menu"></div>
+        </div>
+        
+        <div class="menu-container">
+            <button id="loadDataBtn3" class="load-btn3">Опросники</button>
+            <div class="dropdown-menu"></div>
+        </div>
+
+        <div class="menu-container">
+            <button id="loadDataBtn7" class="load-btn7">Файлы</button>
+            <div class="dropdown-menu"></div>
+        </div>
+
+        
+        <div class="menu-container">
+            <button id="loadDataBtn4" class="load-btn4">Общие файлы</button>
+            <div class="dropdown-menu"></div>
+        </div>
+
+        <div class="menu-container">
+            <button id="loadDataBtn5" class="load-btn5">HUNT</button>
+            <div class="dropdown-menu"></div>
+        </div>
+
+        <div class="menu-container">
+            <button id="loadDataBtn6" class="load-btn6">Добавить обследование</button>
+        </div>
+
+        <div id="extraButtonsContainer" class="extra-buttons hidden"></div>
+
+        <div id="loadingIndicator" class="loading hidden">
+            <div class="spinner"></div>
+            <span>Загрузка данных...</span>
+        </div>
+
+        <div id="tableButtons" class="table-controls hidden">
+            <button id="downloadButton" class="download-btn">Скачать</button>
+            <button id="editButton" class="edit-btn">Редактировать</button>
+            <form>
+                <input id="filter-checkbox" type="checkbox">
+                <label for="filter-checkbox">Показать сначала отсутствующие данные</label>
+            </form>
+        </div>
+
+        <div id="tableContainer" class="table-container hidden">
+            <table>
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="errorMessage" class="error hidden"></div>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
